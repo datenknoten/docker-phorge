@@ -1,6 +1,6 @@
 [submodule "arcanist"]
 	path = arcanist
-	url = https://github.com/phacility/arcanist.git
-[submodule "phabricator"]
-	path = phabricator
-	url = https://github.com/phacility/phabricator.git
+	url = https://github.com/phorgeit/arcanist.git
+[submodule "phorge"]
+	path = phorge
+	url = https://github.com/phorgeit/phorge.git

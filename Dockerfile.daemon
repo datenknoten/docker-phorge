@@ -2,10 +2,10 @@
 FROM php:7.4-cli-buster
 ##### End Daemon
 
-LABEL org.opencontainers.image.source https://github.com/phabricator-docker/phabricator
+LABEL org.opencontainers.image.source https://github.com/phorge-docker/phorge
 
 # Required Components
-# @see https://secure.phabricator.com/book/phabricator/article/installation_guide/#installing-required-comp
+# @see https://secure.phorge.com/book/phorge/article/installation_guide/#installing-required-comp
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     git \
@@ -16,7 +16,7 @@ RUN apt-get update \
     python3-pkg-resources \
     python3-pygments \
     imagemagick \
-    # @see https://secure.phabricator.com/w/guides/dependencies/
+    # @see https://secure.phorge.com/w/guides/dependencies/
     # provides ssh-keygen and ssh, these are needed to sync ssh repositories
     openssh-client \
     procps \
@@ -83,7 +83,7 @@ RUN { \
         echo 'opcache.max_accelerated_files=4000'; \
         echo 'opcache.revalidate_freq=60'; \
         echo 'opcache.fast_shutdown=1'; \
-        # From Phabricator
+        # From Phorge
         echo 'opcache.validate_timestamps=0'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
@@ -109,11 +109,11 @@ RUN mkdir -p /var/tmp/phd/log/ \
 
 COPY ./ /opt
 
-WORKDIR /opt/phabricator
+WORKDIR /opt/phorge
 
 RUN git submodule update --init --recursive
 
-ENV PATH "$PATH:/opt/phabricator/bin"
+ENV PATH "$PATH:/opt/phorge/bin"
 
 ##### Start Daemon
 CMD phd start \

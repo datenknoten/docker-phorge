@@ -1,11 +1,11 @@
-##### Start Phabricator
+##### Start Phorge
 FROM php:7.4-apache-buster
-##### End Phabricator
+##### End Phorge
 
-LABEL org.opencontainers.image.source https://github.com/phabricator-docker/phabricator
+LABEL org.opencontainers.image.source https://github.com/phorge-docker/phorge
 
 # Required Components
-# @see https://secure.phabricator.com/book/phabricator/article/installation_guide/#installing-required-comp
+# @see https://secure.phorge.com/book/phorge/article/installation_guide/#installing-required-comp
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     git \
@@ -16,7 +16,7 @@ RUN apt-get update \
     python3-pkg-resources \
     python3-pygments \
     imagemagick \
-    # @see https://secure.phabricator.com/w/guides/dependencies/
+    # @see https://secure.phorge.com/w/guides/dependencies/
     # provides ssh-keygen and ssh, these are needed to sync ssh repositories
     openssh-client \
     procps \
@@ -26,7 +26,7 @@ RUN apt-get update \
 RUN set -ex; \
     \
     if command -v a2enmod; then \
-        # Phabricator needs mod_rewrite for rewritting to index.php
+        # Phorge needs mod_rewrite for rewritting to index.php
         a2enmod rewrite; \
     fi; \
     \
@@ -84,7 +84,7 @@ RUN { \
         echo 'opcache.max_accelerated_files=4000'; \
         echo 'opcache.revalidate_freq=60'; \
         echo 'opcache.fast_shutdown=1'; \
-        # From Phabricator
+        # From Phorge
         echo 'opcache.validate_timestamps=0'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
@@ -103,24 +103,24 @@ RUN { \
 RUN mkdir /var/repo \
   && chown www-data:www-data /var/repo
 
-##### Start Phabricator
+##### Start Phorge
 RUN { \
         echo '<VirtualHost *:80>'; \
         echo '  RewriteEngine on'; \
         echo '  RewriteRule ^(.*)$ /index.php?__path__=$1 [B,L,QSA]'; \
         echo '</VirtualHost>'; \
     } > /etc/apache2/sites-available/000-default.conf
-##### End Phabricator
+##### End Phorge
 
 COPY ./ /opt
 
-WORKDIR /opt/phabricator
+WORKDIR /opt/phorge
 
-##### Start Phabricator
+##### Start Phorge
 RUN rmdir /var/www/html; \
-	  ln -sf /opt/phabricator/webroot /var/www/html;
-##### End Phabricator
+	  ln -sf /opt/phorge/webroot /var/www/html;
+##### End Phorge
 
 RUN git submodule update --init --recursive
 
-ENV PATH "$PATH:/opt/phabricator/bin"
+ENV PATH "$PATH:/opt/phorge/bin"
