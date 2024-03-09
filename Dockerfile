@@ -130,7 +130,21 @@ CMD phd start \
 
 FROM base AS aphlict
 
-RUN npm install --prefix /opt/phorge/support/aphlict/server ws
+RUN mkdir -p /var/log \
+  && touch /var/log/aphlict.log \
+  && chown www-data:www-data /var/log/aphlict.log
+
+EXPOSE 22280
+EXPOSE 22281
+
+COPY --from=node:lts-buster /usr/local/bin/node /usr/local/bin/node
+
+COPY --from=node:lts-buster /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm; \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx;
+
+RUN npm clean-install --prefix /opt/phorge/support/aphlict/server ws
 
 USER www-data
 
