@@ -29,6 +29,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: web
           tags: ghcr.io/datenknoten/phorge
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
         with:
           context: .
@@ -36,6 +38,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: daemon
           tags: ghcr.io/datenknoten/phorge-daemon
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
         with:
           context: .
@@ -43,6 +47,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: aphlict
           tags: ghcr.io/datenknoten/phorge-aphlict
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
         with:
           context: .
@@ -50,3 +56,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           target: sshd
           tags: ghcr.io/datenknoten/phorge-sshd
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
