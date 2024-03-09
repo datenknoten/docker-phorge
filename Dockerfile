@@ -1,5 +1,5 @@
 ##### Start Phorge
-FROM php:7.4-apache-buster
+FROM php:7.4-apache-buster AS base
 ##### End Phorge
 
 LABEL org.opencontainers.image.source https://github.com/phorge-docker/phorge
@@ -103,24 +103,56 @@ RUN { \
 RUN mkdir /var/repo \
   && chown www-data:www-data /var/repo
 
-##### Start Phorge
+COPY ./ /opt
+
+WORKDIR /opt/phorge
+
+RUN git submodule update --init --recursive
+
+ENV PATH "$PATH:/opt/phorge/bin"
+
+FROM base AS web
+
+RUN rmdir /var/www/html; \
+	  ln -sf /opt/phorge/webroot /var/www/html;
+
 RUN { \
         echo '<VirtualHost *:80>'; \
         echo '  RewriteEngine on'; \
         echo '  RewriteRule ^(.*)$ /index.php?__path__=$1 [B,L,QSA]'; \
         echo '</VirtualHost>'; \
     } > /etc/apache2/sites-available/000-default.conf
-##### End Phorge
 
-COPY ./ /opt
+FROM base AS daemon
 
-WORKDIR /opt/phorge
+CMD phd start \
+  && tail -f /var/tmp/phd/log/daemons.log
 
-##### Start Phorge
-RUN rmdir /var/www/html; \
-	  ln -sf /opt/phorge/webroot /var/www/html;
-##### End Phorge
+FROM base AS aphlict
 
-RUN git submodule update --init --recursive
+RUN npm install --prefix /opt/phorge/support/aphlict/server ws
 
-ENV PATH "$PATH:/opt/phorge/bin"
+USER www-data
+
+CMD aphlict debug
+
+FROM base as sshd
+
+ARG DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends \
+      openssh-server \
+      git \
+      sudo && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir /run/sshd && \
+    useradd -m vcs-user && \
+    usermod -p NP vcs-user && \
+    usermod -s /bin/sh vcs-user
+
+COPY vcs-sudo /etc/sudoers.d/vcs-user
+
+CMD [ "/usr/sbin/sshd", "-D" ]
