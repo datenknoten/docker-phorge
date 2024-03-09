@@ -1,5 +1,5 @@
 ##### Start Phorge
-FROM php:7.4-apache-buster AS base
+FROM php:8.2-apache-buster AS base
 ##### End Phorge
 
 LABEL org.opencontainers.image.source https://github.com/phorge-docker/phorge
