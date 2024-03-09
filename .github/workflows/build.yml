@@ -23,6 +23,7 @@ jobs:
         with:
           submodules: recursive
       - uses: docker/build-push-action@v3
+        name: Build web image
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/stable' }}
@@ -32,6 +33,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
+        name: Build daemon image
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/stable' }}
@@ -41,6 +43,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
+        name: Build aphlict image
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/stable' }}
@@ -50,6 +53,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - uses: docker/build-push-action@v3
+        name: Build sshd image
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/stable' }}
