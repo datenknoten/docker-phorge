@@ -11,7 +11,7 @@ jobs:
     
     strategy:
       matrix: 
-        branch: ['master', 'stable']
+        branch: ['master']
 
     steps:
       - uses: actions/checkout@v4
@@ -25,8 +25,8 @@ jobs:
           git submodule --quiet foreach git checkout --quiet origin/${{ matrix.branch }}
           if ! (git diff --quiet) then
             git checkout -B ${{ matrix.branch }}
-            git config --global user.name "Phabricator Docker"
-            git config --global user.email "phabricator-docker@users.noreply.github.com"
-            git commit --all -m "Update Phabricator"
+            git config --global user.name "Phorge Docker"
+            git config --global user.email "phorge-docker@users.noreply.github.com"
+            git commit --all -m "Update Phorge"
             git push origin ${{ matrix.branch }}
           fi
