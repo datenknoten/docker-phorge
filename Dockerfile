@@ -1,5 +1,5 @@
 ##### Start Phorge
-FROM php:8.2-apache-bookworm AS base
+FROM php:8.3-apache-bookworm AS base
 ##### End Phorge
 
 LABEL org.opencontainers.image.source https://github.com/phorge-docker/phorge
